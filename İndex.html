@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Subway Surf Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    #game-container {
+      width: 800px;
+      height: 600px;
+      margin: 40px auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #play-button:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <button id="play-button">Play</button>
+    <canvas id="game-canvas" width="800" height="600"></canvas>
+  </div>
+  <script>
+    let canvas = document.getElementById('game-canvas');
+    let ctx = canvas.getContext('2d');
+    let lanes = [];
+    let cow;
+    let score = 0;
+    let gameOver = false;
+
+    // Create lanes
+    for (let i = 0; i < 3; i++) {
+      lanes.push({
+        x: i * 250,
+        y: 0,
+        width: 250,
+        height: 600
+      });
+    }
+
+    // Create cow
+    cow = {
+      x: 375,
+      y: 300,
+      width: 50,
+      height: 50,
+      speed: 5
+    };
+
+    // Draw game
+    function drawGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < lanes.length; i++) {
+        ctx.fillStyle = '#ccc';
+        ctx.fillRect(lanes[i].x, lanes[i].y, lanes[i].width, lanes[i].height);
+      }
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(cow.x, cow.y, cow.width, cow.height);
+    }
+
+    // Update game
+    function updateGame() {
+      if (!gameOver) {
+        cow.y += cow.speed;
+        if (cow.y > canvas.height) {
+          gameOver = true;
+        }
+      }
+    }
+
+    // Handle input
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        if (cow.x > 0 && cow.x < canvas.width - cow.width) {
+          cow.x += (e.key === 'ArrowLeft'? -cow.speed : cow.speed);
+        }
+      }
+    });
+
+    // Play button click event
+    document.getElementById('play-button').addEventListener('click', () => {
+      gameOver = false;
+      score = 0;
+      cow.y = 300;
+      drawGame();
+      setInterval(updateGame, 16);
+    });
+
+    // Draw initial game state
+    drawGame();
+  </script>
+</body>
+</html>
